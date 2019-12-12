@@ -1,0 +1,13 @@
+name = "SymbolContexts"
+uuid = "43c310d3-c3a0-4839-9c83-089df6867a76"
+authors = ["dgkf <18220321+dgkf@users.noreply.github.com>"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

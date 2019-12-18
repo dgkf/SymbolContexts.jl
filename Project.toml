@@ -3,6 +3,9 @@ uuid = "43c310d3-c3a0-4839-9c83-089df6867a76"
 authors = ["dgkf <18220321+dgkf@users.noreply.github.com>"]
 version = "0.1.0"
 
+[deps]
+Crayons = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
+
 [compat]
 julia = "1"
 

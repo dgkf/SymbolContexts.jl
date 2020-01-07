@@ -2,7 +2,7 @@ export @syms
 
 
 
-function syms(expr)
+function syms(expr, x::Symbol=gensym())
     expr
 end
 
@@ -19,16 +19,18 @@ function syms(expr::Expr, x::Symbol=gensym())
     # e.g. 
     #     :x .* 3
     #   becomes
-    #     d -> d:(:x) .* 3
+    #     d -> sym(d, :x) .* 3
     new_expr, print_expr, syms, any_substitutions = walk_expr_for_syms(expr, 
          (e, s) -> s == :. ? :($x) : :(sym($x, $(Meta.quot(s)))))
-    
+
     # wrap new expression in a quote call so it can be displayed for printing
     print_expr = Expr(:quote, print_expr)
-    syms = syms[sortperm(string.(syms))]
+    if syms !== missing && length(syms) > 0; syms = syms[sortperm(string.(syms))]
+    else; syms = []
+    end
 
     # build call to syms_arg_handler for keyword arg handling
-    :(SymbolContext($print_expr, $(syms), $x -> $(new_expr)))
+    :(SymbolContext($syms, $x -> $new_expr, $print_expr))
 end
 
 

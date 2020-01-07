@@ -5,12 +5,12 @@ import Crayons: CrayonStack, Crayon
 
 
 struct SymbolContext
-    body
     syms::AbstractArray
     f::Function
+    display_expr
 end
 
-
+SymbolContext(syms, f) = SymbolContext(syms, f, nothing)
 
 (x::SymbolContext)(; kwargs...) = x(kwargs)
 function (x::SymbolContext)(arg)
@@ -26,10 +26,25 @@ function (x::SymbolContext)(arg)
     x.f(arg)
 end
 
+# julia> @syms begin
+#            :x + :y + :z
+#            @syms begin
+#                ^(:x) + :z
+#            end
+#        end
+# SymbolContext [:x, :y, :z] # col1
+# begin
+#     :x + :y + :z           # col1
+#     SymbolContext [:z]     # col2
+#     begin
+#         :x + :z            # col1 + col2
+#     end
+# end
+
 
 function show(io::IO, x::SymbolContext) 
     stack = CrayonStack(incremental = true)
-    print("SymbolContext [")
+    print("SymbolContext([")
     for (i, sym)=enumerate(x.syms)
         print(i == 1 ? "" : ", ")
         print(io, push!(stack, Crayon(foreground = :blue)))
@@ -37,31 +52,32 @@ function show(io::IO, x::SymbolContext)
         show_unquoted(io, sym)
         print(io, pop!(stack))
     end 
-    print("]")
-    println()
-    Base.show_unquoted(io, x.body)
+    print("], ")
+    if x.display_expr isa Expr && x.display_expr.head == :block; println(); end
+    Base.show_unquoted(io, x.display_expr)
+    print(")")
 end
 
 
 
-struct HighlightedSymbol{T<:Any} 
-    e::T
+struct Highlighted{T}
+    x::T
 end
 
-function show(io::IO, x::HighlightedSymbol{<:Number})
+function show(io::IO, x::Highlighted{<:Number})
     stack = CrayonStack(incremental = true)
     print(io, push!(stack, Crayon(foreground = :blue)))
     print(":")
-    show(io, x.e)
+    show(io, x.x)
     print(io, pop!(stack))
 end
 
-function show(io::IO, x::HighlightedSymbol)
+function show(io::IO, x::Highlighted{<:Symbol})
     stack = CrayonStack(incremental = true)
     print(io, push!(stack, Crayon(foreground = :blue)))
 
-    if x.e == :.; print(":.")
-    else; show(io, x.e)
+    if x.x == :.; print(":.")
+    else; show(io, x.x)
     end
 
     print(io, pop!(stack))

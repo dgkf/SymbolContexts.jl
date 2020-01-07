@@ -1,4 +1,4 @@
-export @syms
+export @syms, syms
 
 
 

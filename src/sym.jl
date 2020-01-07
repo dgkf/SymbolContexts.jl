@@ -30,8 +30,6 @@ sym(x::Pair, s::Int) = getfield(x, [:first, :second][s])
 # Dict
 sym(x::Dict{String,}, s::Symbol) = getindex(x, string(s))
 
-
-
 """
 """
 function match_syms(x, ss)

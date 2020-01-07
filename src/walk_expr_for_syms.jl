@@ -27,7 +27,7 @@ walk_expr_for_syms(q::QuoteNode, f) =
 walk_expr_for_syms(expr::Expr, symbol_dict::Dict) = 
     walk_expr_for_syms(expr, (e, s) -> get(symbol_dict, s, e))
 
-walk_expr_for_syms(expr::Expr, symbol_func::Function, symbols::Union{Array{Symbol,1}}) = 
+walk_expr_for_syms(expr::Expr, symbol_func::Function, symbols::Array{Symbol,1}) = 
     walk_expr_for_syms(expr, (e, s) -> s in symbols ? symbol_func(e, s) : expr)
 
 function walk_expr_for_syms(e::Expr, symbol_func::Function)

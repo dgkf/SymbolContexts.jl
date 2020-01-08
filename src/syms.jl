@@ -30,7 +30,7 @@ function syms(expr::Expr, x::Symbol=gensym())
     end
 
     # build call to syms_arg_handler for keyword arg handling
-    :(SymbolContext($syms, $x -> $new_expr, $print_expr))
+    :($SymbolContext($syms, $x -> $new_expr, $print_expr))
 end
 
 
